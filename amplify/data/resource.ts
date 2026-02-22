@@ -6,7 +6,7 @@ adding a new "isDone" field as a boolean. The authorization rule below
 specifies that any unauthenticated user can "create", "read", "update", 
 and "delete" any "Todo" records.
 =========================================================================*/
-const schema = a.schema({
+/*const schema = a.schema({
   Todo: a
     .model({
       content: a.string(),
@@ -22,6 +22,7 @@ export const data = defineData({
     defaultAuthorizationMode: 'identityPool',
   },
 });
+*/
 
 /*== STEP 2 ===============================================================
 Go to your frontend source code. From your client-side code, generate a
@@ -51,3 +52,33 @@ Fetch records from the database and use them in your frontend component.
 // const { data: todos } = await client.models.Todo.list()
 
 // return <ul>{todos.map(todo => <li key={todo.id}>{todo.content}</li>)}</ul>
+
+const schema = a.schema({
+  BedrockResponse: a.customType({
+    body: a.string(),
+    error: a.string(),
+  }),
+  askBedrock: a
+    .query()
+    .arguments({ ingredients: a.string().array() })
+    .returns(a.ref("BedrockResponse"))
+    .authorization((allow) => [allow.authenticated()])
+    .handler(
+      a.handler.custom({
+        entry: "./bedrock.js",
+        dataSource: "bedrockDS"
+      })
+    ),
+});
+
+export type Schema = ClientSchema<typeof schema>;
+
+export const data = defineData({
+  schema,
+  authorizationModes: {
+    defaultAuthorizationMode: "apiKey",
+    apiKeyAuthorizationMode: {
+      expiresInDays: 30,
+    },
+  },
+});
