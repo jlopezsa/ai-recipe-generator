@@ -1,3 +1,5 @@
+// Lambda function
+
 export function request(ctx) {
     const { ingredients = [] } = ctx.args;
   
@@ -32,8 +34,10 @@ export function request(ctx) {
   }
   
   export function response(ctx) {
-    // Parse the response body
+      // Parse the response body
+    console.log("JJLS response", ctx)
     const parsedBody = JSON.parse(ctx.result.body);
+    console.log("JJLS parsedBody", parsedBody)
     // Extract the text content from the response
     const res = {
       body: parsedBody.content[0].text,

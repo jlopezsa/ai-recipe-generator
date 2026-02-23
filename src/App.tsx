@@ -1,4 +1,4 @@
-import {useState } from "react";
+import { useState } from "react";
 import type { FormEvent } from "react";
 import { Loader, Placeholder } from "@aws-amplify/ui-react";
 import "./App.css";
@@ -7,26 +7,31 @@ import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import outputs from "../amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
+
 Amplify.configure(outputs);
+
 const amplifyClient = generateClient<Schema>({
   authMode: "userPool",
 });
+
 function App() {
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     try {
       const formData = new FormData(event.currentTarget);
-      const { data, errors } = await 
-amplifyClient.queries.askBedrock({
-        ingredients: [formData.get("ingredients")?.toString() || ""],
-      });
+      console.log("JJLS onSubmit ", [formData.get("ingredients")?.toString() || ""])
+      const { data, errors } = await
+        amplifyClient.queries.askBedrock({
+          ingredients: [formData.get("ingredients")?.toString() || ""],
+        });
       if (!errors) {
         setResult(data?.body || "No data returned");
       } else {
-        console.log(errors);
+        console.log("JJLS ERRORS", errors);
       }
     } catch (e) {
       alert(`An error occurred: ${e}`);
@@ -34,18 +39,19 @@ amplifyClient.queries.askBedrock({
       setLoading(false);
     }
   };
+
   return (
     <div className="app-container">
       <div className="header-container">
-<h1 className="main-header">
+        <h1 className="main-header">
           Meet Your Personal
           <br />
           <span className="highlight">Recipe AI</span>
         </h1>
         <p className="description">
           Simply type a few ingredients using the format ingredient1,
-          ingredient2, etc., and Recipe AI will generate an all-new 
-recipe on
+          ingredient2, etc., and Recipe AI will generate an all-new
+          recipe on
           demand...
         </p>
       </div>
@@ -79,4 +85,5 @@ recipe on
     </div>
   );
 }
+
 export default App
