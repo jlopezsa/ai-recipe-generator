@@ -25,10 +25,13 @@ const bedrockDataSource = backend.data.resources.graphqlApi.addHttpDataSource(
 
 bedrockDataSource.grantPrincipal.addToPrincipalPolicy(
   new PolicyStatement({
-    actions: ["bedrock:InvokeModel"],
+    actions: ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream",],
     resources: [
-      `arn:aws:bedrock:us-east-2:${Aws.ACCOUNT_ID}:inference-profile/us.anthropic.claude-3-haiku-20240307-v1:0`,
+      // Tu caso actual (modelId con prefijo "us." => inference-profile)
+      `arn:aws:bedrock:us-east-2:${Aws.ACCOUNT_ID}:inference-profile/*`,
+
+      // Compatibilidad si luego invocas un foundation model directo
+      "arn:aws:bedrock:us-east-2::foundation-model/*",
     ],
-    
   })
 );

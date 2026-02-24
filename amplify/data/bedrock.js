@@ -35,14 +35,21 @@ export function request(ctx) {
   }
   
   export function response(ctx) {
-      // Parse the response body
-    console.log("JJLS response", ctx)
-    const parsedBody = JSON.parse(ctx.result.body);
-    console.log("JJLS parsedBody", parsedBody)
-    // Extract the text content from the response
-    const res = {
-      body: parsedBody.content[0].text,
+    const statusCode = ctx.result.statusCode;
+    const parsedBody = JSON.parse(ctx.result.body || "{}");
+
+    console.log("JJLS statusCode", statusCode);
+    console.log("JJLS parsedBody", parsedBody);
+
+    if (statusCode >= 400) {
+      return {
+        body: null,
+        error: parsedBody.Message || `Bedrock error (${statusCode})`,
+      };
+    }
+
+    return {
+      body: parsedBody.content?.[0]?.text ?? "No content returned",
+      error: null,
     };
-    // Return the response
-    return res;
-  }
+}
