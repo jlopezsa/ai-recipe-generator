@@ -1,4 +1,4 @@
-// Lambda function
+// Resolver JS de AppSync/Amplify Data.
 
 export function request(ctx) {
     const { ingredients = [] } = ctx.args;
@@ -7,6 +7,7 @@ export function request(ctx) {
     const prompt = `Suggest a recipe idea using these ingredients: ${ingredients.join(", ")}.`;
   
     // Return the request configuration
+    // inference-profile
     return {
       resourcePath: `/model/us.anthropic.claude-3-haiku-20240307-v1:0/invoke`,
       method: "POST",
